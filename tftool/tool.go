@@ -1,31 +1,52 @@
 package tftool
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"runtime/debug"
 
 	"github.com/g7r/ggg/schema"
 )
 
-func MarshalDashboard(dashboard *schema.Dashboard) string {
-	dashboardJSON, err := json.Marshal(dashboard)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	return string(dashboardJSON)
+func HandleFatalError(prefix string, err error) {
+	_, _ = fmt.Fprintf(os.Stderr, "ERROR: %s: %s\n%s", prefix, err, debug.Stack())
+	os.Exit(1)
 }
 
-func Main(dashboard *schema.Dashboard) {
-	var output struct {
-		Dashboard string `json:"dashboard"`
+func Main(dashboards map[string]*schema.Dashboard) {
+	output := map[string]string{}
+	for name, dashboard := range dashboards {
+		dashboardJSON, err := json.Marshal(dashboard)
+		if err != nil {
+			HandleFatalError(fmt.Sprintf("failed to marshal dashboard `%s` to JSON", name), err)
+		}
+
+		output[name] = string(dashboardJSON)
 	}
 
-	output.Dashboard = MarshalDashboard(dashboard)
 	outputJSON, err := json.Marshal(output)
 	if err != nil {
-		panic(err.Error())
+		HandleFatalError("failed to marshal output to JSON", err)
 	}
 
 	fmt.Println(string(outputJSON))
+}
+
+func ParseArgs(args interface{}) {
+	inputBytes, err := ioutil.ReadAll(os.Stdin)
+	if err != nil {
+		HandleFatalError("failed to read stdin", err)
+	}
+
+	inputBytes = bytes.TrimSpace(inputBytes)
+	if len(inputBytes) == 0 {
+		return
+	}
+
+	if err := json.Unmarshal(inputBytes, args); err != nil {
+		HandleFatalError("failed to unmarshal input JSON (`args` should be compatible with map[string]string)", err)
+	}
 }
