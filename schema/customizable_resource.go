@@ -35,6 +35,7 @@ func marshalResource(r interface{}, cjson customJSON) ([]byte, error) {
 		}
 
 		for k, v := range secondaryJSONMap {
+			// TODO: DeleteField doesn't survive marshaling
 			if v == DeleteField {
 				delete(primaryJSONMap, k)
 			} else {

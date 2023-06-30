@@ -20,3 +20,7 @@ func (b *dashboardPanelBuilder) GridPos(x, y, width, height int) {
 	b.panel.GridPos.Width = width
 	b.panel.GridPos.Height = height
 }
+
+func (b *dashboardPanelBuilder) Transparent(transparent bool) {
+	b.panel.Transparent = transparent
+}

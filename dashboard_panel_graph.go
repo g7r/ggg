@@ -57,10 +57,6 @@ type DashboardPanelGraphTargetsBuilder struct {
 	parent *DashboardPanelGraphBuilder
 }
 
-type DashboardPanelGraphTargetBuilder struct {
-	target *schema.DashboardPanelGraphTarget
-}
-
 func newDashboardPanelGraphBuilder() *DashboardPanelGraphBuilder {
 	panel := schema.DashboardPanelGraph{
 		DashboardPanelCommonFields: schema.DashboardPanelCommonFields{
@@ -94,12 +90,12 @@ func newDashboardPanelGraphBuilder() *DashboardPanelGraphBuilder {
 		YAxes: schema.DashboardPanelGraphYAxes{
 			Left: schema.DashboardPanelGraphYAxis{
 				Show:    true,
-				Format:  schema.GraphYAxisFormatMiscShort,
+				Format:  schema.UnitMiscShort,
 				LogBase: 1.0,
 			},
 			Right: schema.DashboardPanelGraphYAxis{
 				Show:    true,
-				Format:  schema.GraphYAxisFormatMiscShort,
+				Format:  schema.UnitMiscShort,
 				LogBase: 1.0,
 			},
 		},
@@ -175,6 +171,10 @@ func (b *DashboardPanelGraphBuilder) NullPointMode(mode schema.NullPointMode) {
 	b.panel.NullPointMode = mode
 }
 
+func (b *DashboardPanelGraphBuilder) Decimals(decimals int) {
+	b.panel.Decimals = &decimals
+}
+
 func (b *DashboardPanelGraphBuilder) DashLength(dashLength int) {
 	b.panel.DashLength = dashLength
 }
@@ -199,6 +199,10 @@ func (b *DashboardPanelGraphBuilder) HiddenSeries(hiddenSeries bool) {
 	b.panel.HiddenSeries = hiddenSeries
 }
 
+func (b *DashboardPanelGraphBuilder) Stack(stack bool) {
+	b.panel.Stack = stack
+}
+
 func (b *DashboardPanelGraphBuilder) AlertThreshold(alertThreshold bool) {
 	b.panel.Options.AlertThreshold = alertThreshold
 }
@@ -217,6 +221,10 @@ func (b *DashboardPanelGraphBuilder) YAxisLeft(fn func(builder *DashboardPanelGr
 
 func (b *DashboardPanelGraphBuilder) YAxisRight(fn func(builder *DashboardPanelGraphYAxisBuilder)) {
 	fn(&DashboardPanelGraphYAxisBuilder{yaxis: &b.panel.YAxes.Right})
+}
+
+func (b *DashboardPanelGraphBuilder) Legend(fn func(builder *DashboardPanelGraphLegendBuilder)) {
+	fn(&DashboardPanelGraphLegendBuilder{legend: &b.panel.Legend})
 }
 
 func (b *DashboardPanelGraphBuilder) Targets(fn func(builder *DashboardPanelGraphTargetsBuilder)) {
@@ -402,11 +410,19 @@ func (b *DashboardPanelGraphLegendBuilder) SideWidth(sideWidth float64) {
 	b.legend.SideWidth = sideWidth
 }
 
+func (b *DashboardPanelGraphLegendBuilder) Sort(sort string) {
+	b.legend.Sort = sort
+}
+
+func (b *DashboardPanelGraphLegendBuilder) SortDesc(sortDesc bool) {
+	b.legend.SortDesc = sortDesc
+}
+
 func (b *DashboardPanelGraphLegendBuilder) JSON(customJSON interface{}) {
 	b.legend.CustomJSON.Add(customJSON)
 }
 
-func (b *DashboardPanelGraphYAxisBuilder) Format(format schema.GraphYAxisFormat) {
+func (b *DashboardPanelGraphYAxisBuilder) Format(format schema.Unit) {
 	b.yaxis.Format = format
 }
 
@@ -431,63 +447,23 @@ func (b *DashboardPanelGraphYAxisBuilder) Max(max float64) {
 }
 
 func (b *DashboardPanelGraphYAxisBuilder) Decimals(decimals int) {
-	b.yaxis.Decimals = decimals
+	b.yaxis.Decimals = &decimals
 }
 
 func (b *DashboardPanelGraphYAxisBuilder) JSON(customJSON interface{}) {
 	b.yaxis.CustomJSON.Add(customJSON)
 }
 
-func (b *DashboardPanelGraphTargetsBuilder) AddTarget(fn func(builder *DashboardPanelGraphTargetBuilder)) {
+func (b *DashboardPanelGraphTargetsBuilder) AddTarget(fn func(builder *DashboardPanelTargetBuilder)) {
 	refID := string([]rune{b.parent.nextRefID})
 	b.parent.nextRefID += 1
 
-	target := schema.DashboardPanelGraphTarget{
+	target := schema.DashboardPanelTarget{
 		RefID:          refID,
-		Format:         schema.GraphTargetFormatTimeSeries,
+		Format:         schema.TargetFormatTimeSeries,
 		IntervalFactor: 1,
 	}
 
-	fn(&DashboardPanelGraphTargetBuilder{target: &target})
+	fn(&DashboardPanelTargetBuilder{target: &target})
 	b.parent.panel.Targets = append(b.parent.panel.Targets, &target)
-}
-
-func (b *DashboardPanelGraphTargetBuilder) RefID(refID string) {
-	b.target.RefID = refID
-}
-
-func (b *DashboardPanelGraphTargetBuilder) Format(format schema.GraphTargetFormat) {
-	b.target.Format = format
-}
-
-func (b *DashboardPanelGraphTargetBuilder) Hide(hide bool) {
-	b.target.Hide = hide
-}
-
-func (b *DashboardPanelGraphTargetBuilder) Instant(instant bool) {
-	b.target.Instant = instant
-}
-
-func (b *DashboardPanelGraphTargetBuilder) Exemplar(exemplar bool) {
-	b.target.Exemplar = exemplar
-}
-
-func (b *DashboardPanelGraphTargetBuilder) Expr(expr string) {
-	b.target.Expr = expr
-}
-
-func (b *DashboardPanelGraphTargetBuilder) Interval(interval string) {
-	b.target.Interval = interval
-}
-
-func (b *DashboardPanelGraphTargetBuilder) IntervalFactor(intervalFactor int) {
-	b.target.IntervalFactor = intervalFactor
-}
-
-func (b *DashboardPanelGraphTargetBuilder) LegendFormat(legendFormat string) {
-	b.target.LegendFormat = legendFormat
-}
-
-func (b *DashboardPanelGraphTargetBuilder) JSON(customJSON interface{}) {
-	b.target.CustomJSON.Add(customJSON)
 }

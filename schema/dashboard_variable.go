@@ -57,6 +57,24 @@ type DashboardVariableDatasource struct {
 	Query string `json:"query"`
 }
 
+type DashboardVariableCustom struct {
+	CustomJSON customJSON `json:"-"`
+
+	DashboardVariable             `json:"-"`
+	DashboardVariableCommonFields `json:",inline"`
+
+	// When to refresh variable values
+	Refresh DashboardVariableRefresh `json:"refresh"`
+	// Enable 'All' option in result value list
+	IncludeAll bool `json:"includeAll"`
+	// Use this value as a custom 'All' value
+	AllValue string `json:"allValue,omitempty"`
+	// Allow multiple values to be selected
+	Multi bool `json:"multi"`
+
+	Query string `json:"query"`
+}
+
 type DashboardVariableCurrent struct {
 	CustomJSON customJSON `json:"-"`
 
@@ -81,4 +99,9 @@ func (d *DashboardVariableDatasource) MarshalJSON() ([]byte, error) {
 func (d *DashboardVariableCurrent) MarshalJSON() ([]byte, error) {
 	type plainCurrent DashboardVariableCurrent
 	return marshalResource((*plainCurrent)(d), d.CustomJSON)
+}
+
+func (d *DashboardVariableCustom) MarshalJSON() ([]byte, error) {
+	type plainCustom DashboardVariableCustom
+	return marshalResource((*plainCustom)(d), d.CustomJSON)
 }

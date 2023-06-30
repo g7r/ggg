@@ -17,10 +17,14 @@ type DashboardAnnotation struct {
 	Type string `json:"type"`
 	// Query for annotation data.
 	RawQuery string `json:"rawQuery,omitempty"`
+	// Expression for annotation data.
+	Expr string `json:"expr,omitempty"`
+	// UNKNOWN
+	Step string `json:"step,omitempty"`
 	// UNKNOWN
 	ShowIn int `json:"showIn"`
 	// UNKNOWN
-	Limit int `json:"limit"`
+	Limit int `json:"limit,omitempty"`
 }
 
 func (d *DashboardAnnotation) MarshalJSON() ([]byte, error) {

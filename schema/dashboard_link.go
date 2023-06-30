@@ -3,9 +3,9 @@ package schema
 type DashboardLinkCommonFields struct {
 	Type        string `json:"type"`
 	Title       string `json:"title"`
-	IncludeVars bool   `json:"includeVars"`
-	KeepTime    bool   `json:"keepTime"`
-	TargetBlank bool   `json:"targetBlank"`
+	IncludeVars bool   `json:"includeVars,omitempty"`
+	KeepTime    bool   `json:"keepTime,omitempty"`
+	TargetBlank bool   `json:"targetBlank,omitempty"`
 }
 
 type DashboardLinkDashboards struct {
