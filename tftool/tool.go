@@ -9,11 +9,12 @@ import (
 	"runtime/debug"
 
 	"github.com/g7r/ggg/schema"
+	"github.com/g7r/ggg/tftool/internal"
 )
 
 func HandleFatalError(prefix string, err error) {
-	_, _ = fmt.Fprintf(os.Stderr, "ERROR: %s: %s\n%s", prefix, err, debug.Stack())
-	os.Exit(1)
+	_, _ = fmt.Fprintf(internal.Stderr, "ERROR: %s: %s\n%s", prefix, err, debug.Stack())
+	internal.OSExit(1)
 }
 
 func Main(dashboards map[string]*schema.Dashboard) {
@@ -32,7 +33,7 @@ func Main(dashboards map[string]*schema.Dashboard) {
 		HandleFatalError("failed to marshal output to JSON", err)
 	}
 
-	fmt.Println(string(outputJSON))
+	_, _ = fmt.Fprintln(internal.Stdout, string(outputJSON))
 }
 
 func ParseArgs(args interface{}) {
