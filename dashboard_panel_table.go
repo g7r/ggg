@@ -19,6 +19,12 @@ func newDashboardPanelTableBuilder() *DashboardPanelTableBuilder {
 			Type: "table",
 		},
 		PluginVersion: "7.5.3",
+		FieldConfig: schema.DashboardPanelFieldConfig[schema.DashboardPanelTableCustom]{
+			Overrides: make([]schema.DashboardPanelFieldConfigOverride, 0),
+			Defaults: schema.DashboardPanelFieldConfigDefaults[schema.DashboardPanelTableCustom]{
+				Mappings: make([]schema.DashboardPanelFieldConfigMapping, 0),
+			},
+		},
 	}
 
 	return &DashboardPanelTableBuilder{
@@ -28,8 +34,8 @@ func newDashboardPanelTableBuilder() *DashboardPanelTableBuilder {
 	}
 }
 
-func (b *DashboardPanelTableBuilder) FieldConfig(fn func(*DashboardPanelFieldConfigBuilder)) {
-	fn(&DashboardPanelFieldConfigBuilder{fieldConfig: &b.panel.FieldConfig})
+func (b *DashboardPanelTableBuilder) FieldConfig(fn func(builder *DashboardPanelTableFieldConfigBuilder)) {
+	fn(&DashboardPanelTableFieldConfigBuilder{fieldConfig: &b.panel.FieldConfig})
 }
 
 func (b *DashboardPanelTableBuilder) Targets(fn func(builder *DashboardPanelTableTargetsBuilder)) {
@@ -46,7 +52,7 @@ func (b *DashboardPanelTableTargetsBuilder) AddTarget(fn func(builder *Dashboard
 
 	target := schema.DashboardPanelTarget{
 		RefID:          refID,
-		Format:         schema.TargetFormatTable,
+		Format:         schema.QueryFormatTable,
 		IntervalFactor: 1,
 	}
 

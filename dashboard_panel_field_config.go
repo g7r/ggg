@@ -2,12 +2,8 @@ package ggg
 
 import "github.com/g7r/ggg/schema"
 
-type DashboardPanelFieldConfigBuilder struct {
-	fieldConfig *schema.DashboardPanelFieldConfig
-}
-
-type DashboardPanelFieldConfigDefaultsBuilder struct {
-	defaults *schema.DashboardPanelFieldConfigDefaults
+type dashboardPanelFieldConfigDefaultsBuilder[C any] struct {
+	defaults *schema.DashboardPanelFieldConfigDefaults[C]
 }
 
 type DashboardPanelFieldConfigOverrideBuilder struct {
@@ -22,39 +18,29 @@ type DashboardPanelFieldConfigColorBuilder struct {
 	color *schema.DashboardPanelFieldConfigColor
 }
 
-func (b *DashboardPanelFieldConfigBuilder) Defaults(fn func(builder *DashboardPanelFieldConfigDefaultsBuilder)) {
-	fn(&DashboardPanelFieldConfigDefaultsBuilder{defaults: &b.fieldConfig.Defaults})
-}
-
-func (b *DashboardPanelFieldConfigBuilder) AddOverride(fn func(builder *DashboardPanelFieldConfigOverrideBuilder)) {
-	var override schema.DashboardPanelFieldConfigOverride
-	fn(&DashboardPanelFieldConfigOverrideBuilder{override: &override})
-	b.fieldConfig.Overrides = append(b.fieldConfig.Overrides, override)
-}
-
-func (b *DashboardPanelFieldConfigDefaultsBuilder) Color(fn func(builder *DashboardPanelFieldConfigColorBuilder)) {
+func (b *dashboardPanelFieldConfigDefaultsBuilder[C]) Color(fn func(builder *DashboardPanelFieldConfigColorBuilder)) {
 	var color schema.DashboardPanelFieldConfigColor
 	fn(&DashboardPanelFieldConfigColorBuilder{color: &color})
 	b.defaults.Color = &color
 }
 
-func (b *DashboardPanelFieldConfigDefaultsBuilder) Unit(unit schema.Unit) {
+func (b *dashboardPanelFieldConfigDefaultsBuilder[C]) Unit(unit schema.Unit) {
 	b.defaults.Unit = &unit
 }
 
-func (b *DashboardPanelFieldConfigDefaultsBuilder) Min(min float64) {
+func (b *dashboardPanelFieldConfigDefaultsBuilder[C]) Min(min float64) {
 	b.defaults.Min = &min
 }
 
-func (b *DashboardPanelFieldConfigDefaultsBuilder) Max(max float64) {
+func (b *dashboardPanelFieldConfigDefaultsBuilder[C]) Max(max float64) {
 	b.defaults.Max = &max
 }
 
-func (b *DashboardPanelFieldConfigDefaultsBuilder) Decimals(decimals int) {
+func (b *dashboardPanelFieldConfigDefaultsBuilder[C]) Decimals(decimals int) {
 	b.defaults.Decimals = &decimals
 }
 
-func (b *DashboardPanelFieldConfigDefaultsBuilder) Thresholds(fn func(builder *DashboardPanelFieldConfigThresholdsBuilder)) {
+func (b *dashboardPanelFieldConfigDefaultsBuilder[C]) Thresholds(fn func(builder *DashboardPanelFieldConfigThresholdsBuilder)) {
 	thresholds := schema.NewDashboardPanelFieldConfigThresholds()
 	fn(&DashboardPanelFieldConfigThresholdsBuilder{thresholds: &thresholds})
 	b.defaults.Thresholds = &thresholds
@@ -104,14 +90,6 @@ func (b *DashboardPanelFieldConfigColorBuilder) FixedColor(color string) {
 
 func (b *DashboardPanelFieldConfigColorBuilder) Mode(mode schema.FieldConfigColorMode) {
 	b.color.Mode = mode
-}
-
-func (b *DashboardPanelFieldConfigBuilder) JSON(customJSON interface{}) {
-	b.fieldConfig.CustomJSON.Add(customJSON)
-}
-
-func (b *DashboardPanelFieldConfigDefaultsBuilder) JSON(customJSON interface{}) {
-	b.defaults.CustomJSON.Add(customJSON)
 }
 
 func (b *DashboardPanelFieldConfigThresholdsBuilder) JSON(customJSON interface{}) {

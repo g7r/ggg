@@ -23,6 +23,13 @@ func newDashboardPanelGaugeBuilder() *DashboardPanelGaugeBuilder {
 			Type: "gauge",
 		},
 		PluginVersion: "7.4.5",
+		FieldConfig: schema.DashboardPanelFieldConfig[schema.DashboardPanelGaugeCustom]{
+			Overrides: make([]schema.DashboardPanelFieldConfigOverride, 0),
+			Defaults: schema.DashboardPanelFieldConfigDefaults[schema.DashboardPanelGaugeCustom]{
+				Custom:   &schema.DashboardPanelGaugeCustom{},
+				Mappings: make([]schema.DashboardPanelFieldConfigMapping, 0),
+			},
+		},
 	}
 
 	return &DashboardPanelGaugeBuilder{
@@ -44,8 +51,8 @@ func (b *DashboardPanelGaugeBuilder) MaxDataPoints(maxDataPoints int) {
 	b.panel.MaxDataPoints = maxDataPoints
 }
 
-func (b *DashboardPanelGaugeBuilder) FieldConfig(fn func(*DashboardPanelFieldConfigBuilder)) {
-	fn(&DashboardPanelFieldConfigBuilder{fieldConfig: &b.panel.FieldConfig})
+func (b *DashboardPanelGaugeBuilder) FieldConfig(fn func(*DashboardPanelGaugeFieldConfigBuilder)) {
+	fn(&DashboardPanelGaugeFieldConfigBuilder{fieldConfig: &b.panel.FieldConfig})
 }
 
 func (b *DashboardPanelGaugeBuilder) Targets(fn func(builder *DashboardPanelGaugeTargetsBuilder)) {
@@ -58,7 +65,7 @@ func (b *DashboardPanelGaugeTargetsBuilder) AddTarget(fn func(builder *Dashboard
 
 	target := schema.DashboardPanelTarget{
 		RefID:          refID,
-		Format:         schema.TargetFormatTimeSeries,
+		Format:         schema.QueryFormatTimeSeries,
 		IntervalFactor: 1,
 	}
 

@@ -39,14 +39,14 @@ const (
 	FieldMatcherTypeByFrameRefID FieldMatcherType = "byFrameRefID"
 )
 
-type DashboardPanelFieldConfig struct {
+type DashboardPanelFieldConfig[C any] struct {
 	CustomJSON customJSON `json:"-"`
 
-	Defaults  DashboardPanelFieldConfigDefaults   `json:"defaults"`
-	Overrides []DashboardPanelFieldConfigOverride `json:"overrides"`
+	Defaults  DashboardPanelFieldConfigDefaults[C] `json:"defaults"`
+	Overrides []DashboardPanelFieldConfigOverride  `json:"overrides"`
 }
 
-type DashboardPanelFieldConfigDefaults struct {
+type DashboardPanelFieldConfigDefaults[C any] struct {
 	CustomJSON customJSON `json:"-"`
 
 	Unit       *Unit                                `json:"unit,omitempty"`
@@ -55,6 +55,9 @@ type DashboardPanelFieldConfigDefaults struct {
 	Min        *float64                             `json:"min,omitempty"`
 	Max        *float64                             `json:"max,omitempty"`
 	Thresholds *DashboardPanelFieldConfigThresholds `json:"thresholds,omitempty"`
+	Mappings   []DashboardPanelFieldConfigMapping   `json:"mappings"`
+
+	Custom *C `json:"custom,omitempty"`
 }
 
 type DashboardPanelFieldConfigOverride struct {
@@ -64,6 +67,10 @@ type DashboardPanelFieldConfigOverride struct {
 
 type DashboardPanelFieldConfigPropertyOverride interface {
 	isDashboardPanelFieldConfigPropertyOverride()
+}
+
+type DashboardPanelFieldConfigMapping interface {
+	isDashboardPanelFieldConfigMapping()
 }
 
 type DashboardPanelFieldConfigThresholds struct {
@@ -157,12 +164,12 @@ func NewDashboardPanelFieldConfigPropertyOverrideDisplayMode(displayMode string)
 	return &dashboardPanelFieldConfigPropertyOverride{ID: "custom.displayMode", Value: displayMode}
 }
 
-func (d *DashboardPanelFieldConfig) MarshalJSON() ([]byte, error) {
-	type plainConfig DashboardPanelFieldConfig
+func (d *DashboardPanelFieldConfig[C]) MarshalJSON() ([]byte, error) {
+	type plainConfig DashboardPanelFieldConfig[C]
 	return marshalResource((*plainConfig)(d), d.CustomJSON)
 }
 
-func (d *DashboardPanelFieldConfigDefaults) MarshalJSON() ([]byte, error) {
-	type plainDefaults DashboardPanelFieldConfigDefaults
+func (d *DashboardPanelFieldConfigDefaults[C]) MarshalJSON() ([]byte, error) {
+	type plainDefaults DashboardPanelFieldConfigDefaults[C]
 	return marshalResource((*plainDefaults)(d), d.CustomJSON)
 }

@@ -6,11 +6,26 @@ type DashboardPanelTargetBuilder struct {
 	target *schema.DashboardPanelTarget
 }
 
+type dashboardPanelTargetQueryBuilder struct {
+	customJSON interface{ Add(any) }
+	target     *schema.DashboardPanelTargetQuery
+}
+
+type dashboardPanelTargetSQLBuilder struct {
+	dashboardPanelTargetQueryBuilder
+	target *schema.DashboardPanelTargetSQL
+}
+
+type DashboardPanelTargetAthenaSQLBuilder struct {
+	dashboardPanelTargetQueryBuilder
+	target *schema.DashboardPanelTargetAthenaSQL
+}
+
 func (b *DashboardPanelTargetBuilder) RefID(refID string) {
 	b.target.RefID = refID
 }
 
-func (b *DashboardPanelTargetBuilder) Format(format schema.TargetFormat) {
+func (b *DashboardPanelTargetBuilder) Format(format schema.QueryFormat) {
 	b.target.Format = format
 }
 
@@ -40,6 +55,42 @@ func (b *DashboardPanelTargetBuilder) IntervalFactor(intervalFactor int) {
 
 func (b *DashboardPanelTargetBuilder) LegendFormat(legendFormat string) {
 	b.target.LegendFormat = legendFormat
+}
+
+func (b *dashboardPanelTargetQueryBuilder) RefID(refID string) {
+	b.target.RefID = refID
+}
+
+func (b *dashboardPanelTargetQueryBuilder) Hide(hide bool) {
+	b.target.Hide = hide
+}
+
+func (b *dashboardPanelTargetSQLBuilder) Format(format schema.QueryFormat) {
+	b.target.Format = format
+}
+
+func (b *dashboardPanelTargetSQLBuilder) RawSQL(rawSQL string) {
+	b.target.RawSQL = rawSQL
+}
+
+func (b *DashboardPanelTargetAthenaSQLBuilder) Format(format schema.QueryFormatAthenaSQL) {
+	b.target.Format = format
+}
+
+func (b *DashboardPanelTargetAthenaSQLBuilder) RawSQL(rawSQL string) {
+	b.target.RawSQL = rawSQL
+}
+
+func (b *dashboardPanelTargetQueryBuilder) JSON(customJSON interface{}) {
+	b.customJSON.Add(customJSON)
+}
+
+func (b *dashboardPanelTargetSQLBuilder) JSON(customJSON interface{}) {
+	b.customJSON.Add(customJSON)
+}
+
+func (b *DashboardPanelTargetAthenaSQLBuilder) JSON(customJSON interface{}) {
+	b.customJSON.Add(customJSON)
 }
 
 func (b *DashboardPanelTargetBuilder) JSON(customJSON interface{}) {

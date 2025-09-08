@@ -60,6 +60,95 @@ const (
 	DashboardVariableSortAlphabeticalCaseInsensitiveDesc DashboardVariableSort = 6
 )
 
+type GraphDrawStyle string
+
+const (
+	GraphDrawStyleBars   GraphDrawStyle = "bars"
+	GraphDrawStyleLine   GraphDrawStyle = "line"
+	GraphDrawStylePoints GraphDrawStyle = "points"
+)
+
+type GraphGradientMode string
+
+const (
+	GraphGradientModeNone    GraphGradientMode = "none"
+	GraphGradientModeHue     GraphGradientMode = "hue"
+	GraphGradientModeOpacity GraphGradientMode = "opacity"
+	GraphGradientModeScheme  GraphGradientMode = "scheme"
+)
+
+type LineInterpolation string
+
+const (
+	LineInterpolationLinear     LineInterpolation = "linear"
+	LineInterpolationSmooth     LineInterpolation = "smooth"
+	LineInterpolationStepAfter  LineInterpolation = "stepAfter"
+	LineInterpolationStepBefore LineInterpolation = "stepBefore"
+)
+
+type BarAlignment int
+
+const (
+	BarAlignmentBefore BarAlignment = -1
+	BarAlignmentCenter BarAlignment = 0
+	BarAlignmentAfter  BarAlignment = 1
+)
+
+type VisibilityMode string
+
+const (
+	VisibilityModeAuto   VisibilityMode = "auto"
+	VisibilityModeAlways VisibilityMode = "always"
+	VisibilityModeNever  VisibilityMode = "never"
+)
+
+type AxisPlacement string
+
+const (
+	AxisPlacementAuto   AxisPlacement = "auto"
+	AxisPlacementBottom AxisPlacement = "bottom"
+	AxisPlacementLeft   AxisPlacement = "left"
+	AxisPlacementRight  AxisPlacement = "right"
+	AxisPlacementTop    AxisPlacement = "top"
+	AxisPlacementHidden AxisPlacement = "hidden"
+)
+
+type AxisColorMode string
+
+const (
+	AxisColorModeSeries AxisColorMode = "series"
+	AxisColorModeText   AxisColorMode = "text"
+)
+
+type ScaleDistribution string
+
+const (
+	ScaleDistributionLinear  ScaleDistribution = "linear"
+	ScaleDistributionLog     ScaleDistribution = "log"
+	ScaleDistributionOrdinal ScaleDistribution = "ordinal"
+	ScaleDistributionSymLog  ScaleDistribution = "symlog"
+)
+
+type GraphThresholdsStyleMode string
+
+const (
+	GraphThresholdsStyleModeArea          GraphThresholdsStyleMode = "area"
+	GraphThresholdsStyleModeDashed        GraphThresholdsStyleMode = "dashed"
+	GraphThresholdsStyleModeDashedAndArea GraphThresholdsStyleMode = "dashed+area"
+	GraphThresholdsStyleModeLine          GraphThresholdsStyleMode = "line"
+	GraphThresholdsStyleModeLineAndArea   GraphThresholdsStyleMode = "line+area"
+	GraphThresholdsStyleModeOff           GraphThresholdsStyleMode = "off"
+	GraphThresholdsStyleModeSeries        GraphThresholdsStyleMode = "series"
+)
+
+type StackingMode string
+
+const (
+	StackingModeNone    StackingMode = "none"
+	StackingModeNormal  StackingMode = "normal"
+	StackingModePercent StackingMode = "percent"
+)
+
 var DefaultDashboardRefreshIntervals = []string{"5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"}
 
 type Dashboard struct {
@@ -116,6 +205,27 @@ type DashboardTimepicker struct {
 	RefreshIntervals []string `json:"refresh_intervals"`
 	// Specify for example 5m to ignore last 5 minutes
 	NowDelay string `json:"nowDelay,omitempty"`
+}
+
+type ScaleDistributionConfig struct {
+	LinearThreshold *float64          `json:"linearThreshold,omitempty"`
+	Log             *float64          `json:"log,omitempty"`
+	Type            ScaleDistribution `json:"type"`
+}
+
+type HideSeriesConfig struct {
+	Legend  bool `json:"legend"`
+	Tooltip bool `json:"tooltip"`
+	Viz     bool `json:"viz"`
+}
+
+type GraphThresholdsStyleConfig struct {
+	Mode GraphThresholdsStyleMode `json:"mode"`
+}
+
+type StackingConfig struct {
+	Group string       `json:"group"`
+	Mode  StackingMode `json:"mode"`
 }
 
 type DashboardLink interface {

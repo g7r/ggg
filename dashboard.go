@@ -31,8 +31,8 @@ type DashboardPanelsBuilder struct {
 func NewDashboard(fn func(builder *DashboardBuilder)) *schema.Dashboard {
 	builder := DashboardBuilder{
 		dashboard: &schema.Dashboard{
-			SchemaVersion: 27,
-			Style:         schema.DashboardStyleDark,
+			SchemaVersion: 40,
+			Style:         schema.DashboardStyleLight,
 		},
 		usedPanelIDs: map[int]bool{},
 	}
@@ -146,6 +146,13 @@ func (b *DashboardTemplatingBuilder) AddCustomVariable(fn func(*DashboardVariabl
 
 func (b *DashboardPanelsBuilder) AddTablePanel(fn func(*DashboardPanelTableBuilder)) {
 	panelBuilder := newDashboardPanelTableBuilder()
+	fn(panelBuilder)
+
+	b.appendPanel(panelBuilder.panel, &panelBuilder.panel.DashboardPanelCommonFields)
+}
+
+func (b *DashboardPanelsBuilder) AddTimeseriesPanel(fn func(builder *DashboardPanelTimeseriesBuilder)) {
+	panelBuilder := newDashboardPanelTimeseriesBuilder()
 	fn(panelBuilder)
 
 	b.appendPanel(panelBuilder.panel, &panelBuilder.panel.DashboardPanelCommonFields)

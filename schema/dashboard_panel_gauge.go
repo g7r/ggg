@@ -10,7 +10,7 @@ type DashboardPanelGauge struct {
 	Datasource    string `json:"datasource,omitempty"`
 
 	// TODO: support field config
-	FieldConfig DashboardPanelFieldConfig `json:"fieldConfig"`
+	FieldConfig DashboardPanelFieldConfig[DashboardPanelGaugeCustom] `json:"fieldConfig"`
 
 	// Min interval. Recommended to be set to write frequency.
 	Interval string `json:"interval,omitempty"`
@@ -24,7 +24,16 @@ type DashboardPanelGauge struct {
 	Targets []*DashboardPanelTarget `json:"targets"`
 }
 
+type DashboardPanelGaugeCustom struct {
+	CustomJSON customJSON `json:"-"`
+}
+
 func (d *DashboardPanelGauge) MarshalJSON() ([]byte, error) {
 	type plainPanel DashboardPanelGauge
 	return marshalResource((*plainPanel)(d), d.CustomJSON)
+}
+
+func (d *DashboardPanelGaugeCustom) MarshalJSON() ([]byte, error) {
+	type plainCustom DashboardPanelGaugeCustom
+	return marshalResource((*plainCustom)(d), d.CustomJSON)
 }

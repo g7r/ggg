@@ -10,10 +10,19 @@ type DashboardPanelTable struct {
 	Targets       []*DashboardPanelTarget `json:"targets"`
 
 	// TODO: support field config
-	FieldConfig DashboardPanelFieldConfig `json:"fieldConfig"`
+	FieldConfig DashboardPanelFieldConfig[DashboardPanelTableCustom] `json:"fieldConfig"`
+}
+
+type DashboardPanelTableCustom struct {
+	CustomJSON customJSON `json:"-"`
 }
 
 func (d *DashboardPanelTable) MarshalJSON() ([]byte, error) {
 	type plainPanel DashboardPanelTable
 	return marshalResource((*plainPanel)(d), d.CustomJSON)
+}
+
+func (d *DashboardPanelTableCustom) MarshalJSON() ([]byte, error) {
+	type plainCustom DashboardPanelTableCustom
+	return marshalResource((*plainCustom)(d), d.CustomJSON)
 }

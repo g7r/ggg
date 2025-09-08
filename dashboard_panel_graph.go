@@ -460,7 +460,7 @@ func (b *DashboardPanelGraphTargetsBuilder) AddTarget(fn func(builder *Dashboard
 
 	target := schema.DashboardPanelTarget{
 		RefID:          refID,
-		Format:         schema.TargetFormatTimeSeries,
+		Format:         schema.QueryFormatTimeSeries,
 		IntervalFactor: 1,
 	}
 
